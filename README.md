@@ -215,3 +215,19 @@ java -jar build/libs/{project-nam}.jar
       - 객체를 JSON으로 바꿔주는 대중적인 라이브러리
 
 ![](https://user-images.githubusercontent.com/33862991/100574086-93ff1200-331c-11eb-979c-776a7bf45f8f.JPG)
+
+<br>
+
+## 웹 애플리케이션 계층 구조
+
+![](https://user-images.githubusercontent.com/33862991/100575074-b09c4980-331e-11eb-92f8-f8d47ec443ec.JPG)
+
+- Controller : 웹 MVC의 컨트롤러 역할
+- Service : 핵심 비즈니스 로직 구현
+- Repository : DB에 접근, 도메인 객체를 DB에 저장하고 관리
+- Domain : 비즈니스 도메인 객체
+   - 회원, 주문, 쿠폰 등의 DB에 저장해서 관리되는 주체
+
+<br>
+
+![](https://user-images.githubusercontent.com/33862991/100575078-b1cd7680-331e-11eb-9176-d8080f2ee7c0.JPG)
