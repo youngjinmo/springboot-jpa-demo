@@ -153,3 +153,65 @@ java -jar build/libs/{project-nam}.jar
 ~~~
 
 그냥  IDE에서 `main()` 를 실행하면 build와 run이 동시에 실행된다.
+
+<br>
+
+## API 작동원리
+
+### Spring에서 static/templates 구분하는 방법
+
+요청이 들어오면, 일단 해당 URI를 처리하는 컨트롤러가 있는지 찾는다. 없으면 `\static` 디렉토리에서 해당 리소스를 찾는다. 만약 컨트롤러가 있다면, `\templates` 디렉토리에서 리소스를 찾는다.
+
+
+
+### Spring Boot 컨트롤러에서 파라미터를 받는 방법
+
+- `@PathVariable`
+
+   - REST API를 만들 수 있다.
+
+   - ```java
+      @GetMapping("hello/{guest}")
+      public String hello(@PathVariable String guest, Model model){
+         model.addAttribute("guest", guest);
+         return "hello";
+      }
+      ```
+
+- `@RequestParam`
+
+   - URI에 `?name=devandy`  처럼 파라미터명을 주소창에 입력해야 한다.
+
+   - ```java
+      @GetMapping("hello-mvc")
+      public String helloMvc(@RequestParam("name") String name, Model model) {
+         model.addAttribute("name", name); 
+         return "hello-mvc";
+      }
+      ```
+
+- `@ResponseBody`
+
+   - HTML의 BODY 에 문자를 그대로 전달하는 어노테이션
+
+   - ```java
+      @GetMapping("hello-mvc2")
+      @ResponseBody
+      public String helloMvc2(@RequestParam("name") String name, Model model) {
+         return "hello-mvc"+name;
+      }
+      ```
+
+   - 일반적으로 객체를 주고받을 때 사용하며,가장 많이 사용하는 스프링부트 컨트롤러 어노테이션이다.
+
+   - `viewResolver` 대신 `HttpMessageConverter` 가 동작한다.
+
+      - 클라이언트의 HTTP Accept 헤더와 서버의 컨트롤러 반환 타입 정보 둘을 조합해서 `HttpMessageConverter` 선택
+
+   - 기본 문자처리 : `StringHttpMessageConverter`
+
+   - 기본 객체처리 : `MappingJackson2HttpMessageConverter`
+
+      - 객체를 JSON으로 바꿔주는 대중적인 라이브러리
+
+![](https://user-images.githubusercontent.com/33862991/100574086-93ff1200-331c-11eb-979c-776a7bf45f8f.JPG)
