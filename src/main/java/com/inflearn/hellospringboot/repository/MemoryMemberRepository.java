@@ -33,4 +33,8 @@ public class MemoryMemberRepository implements MemberRepository{
         ArrayList list = new ArrayList<>(store.values());
         return new ArrayList<>(store.values());  // map을 list로 변환해서 반환
     }
+
+    public void clearStore(){
+        store.clear();   // test 메서드 실행 후 캐시 삭제하기 위함.
+    }
 }

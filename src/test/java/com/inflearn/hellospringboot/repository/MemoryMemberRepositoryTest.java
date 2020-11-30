@@ -13,6 +13,12 @@ class MemoryMemberRepositoryTest {
 
     MemoryMemberRepository repository = new MemoryMemberRepository();
 
+    @AfterEach
+    public void afterEach(){
+        // test 메서드 실행 후 캐시 삭제하기 위함.
+        repository.clearStore();
+    }
+
     @Test
     @Order(1)
     public void save(){
