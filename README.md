@@ -94,3 +94,44 @@ Spring Boot : https://spring.io/projects/spring-boot
 
 Thymeleaf : https://www.thymeleaf.org/
 
+<br>
+
+## Thymeleaf
+
+Thymeleaf는 HTML 페이지에서 작동하는 템플릿 엔진이다. 페이지 상단에 아래와 같은 타임리프 옵션을 추가하면, HTML 페이지에서 타임리프 문법을 사용할 수 있다.
+
+~~~html
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
+<head>
+	<meta http-euiv="Content-Type" charset="text/html; charset=UTF-8">
+    <title>Hello</title>
+</head>
+<body>
+	<h1>Hello World</h1>
+    안녕하세요, <span th:text="${guest}">guest</span>
+</body>
+</html>
+~~~
+
+위에서 `guest`는 API를 통해 가져오는 key 역할을 한다.
+
+**HelloController.java**
+
+~~~java
+@Controller
+public class HelloController {
+    @GetMapping("hello/{guest}")
+    public String hello(@PathVariable String guest, Model model){
+        model.addAttribute("guest", guest);
+        return "hello";
+    }
+}
+~~~
+
+GET 요청으로 URI가 `/hello/guest` 가 들어오면, `/resources/templates` 에 있는 hello.html을 반환하는 컨트롤러 메서드이다. 이 때 URI에서 hello 다음으로 들어오는 변수를 `guest` 라는 변수로 인식하도록 메서드 인자로 `@PathVariable String guest` 라고 처리해두었다. 이렇게 하면, URI에서 들어온 hello 다음의 URI를 `hello()` 인자로 던져준다.
+
+이렇게 해서 받은 값은 Model에 넣어서 화면에 반환하여 화면에서 출력할 수 있게된다.
+
+![](https://user-images.githubusercontent.com/33862991/100566140-90fa2680-3308-11eb-802f-fc26c1992c2e.JPG)
+
+<br>
