@@ -135,3 +135,21 @@ GET 요청으로 URI가 `/hello/guest` 가 들어오면, `/resources/templates` 
 ![](https://user-images.githubusercontent.com/33862991/100566140-90fa2680-3308-11eb-802f-fc26c1992c2e.JPG)
 
 <br>
+
+## Build and Run
+
+Gradle 프로젝트를 빌드하는 명령어이다.
+
+~~~bash
+./gradlew build
+~~~
+
+![](https://user-images.githubusercontent.com/33862991/100569298-f05c3480-3310-11eb-949e-338c756b069d.JPG)
+
+Build 하면 jar 파일이 생성되는데, 이 jar를 실행하면 웹 서버를 실행하게된다.
+
+~~~bash
+java -jar build/libs/{project-nam}.jar
+~~~
+
+그냥  IDE에서 `main()` 를 실행하면 build와 run이 동시에 실행된다.
