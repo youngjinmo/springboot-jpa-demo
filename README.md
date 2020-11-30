@@ -88,3 +88,9 @@ Slf4j와 Logback은 각각 어떤 라이브러리인지?
 
 <br>
 
+## Docs
+
+Spring Boot : https://spring.io/projects/spring-boot
+
+Thymeleaf : https://www.thymeleaf.org/
+
