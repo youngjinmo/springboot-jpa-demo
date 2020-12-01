@@ -255,3 +255,31 @@ public class MemberController {
 Spring DI를 설명할 수 있는 컨트롤러 코드이다. `@Autowired` 를 생성자에 적용하면, 컨트롤러가 실행되면서 `@Autowired`가 적용된 메서드에서 `MemberService` 의 bean을 가져와서 Spring Container에 등록한다. 
 
 그래서 컨트롤러와 서비스를 연결할 때 사용하는 어노테이션이 `@Autowired` 라고 한다. 
+
+<br>
+
+## Spring Bean을 등록하는 방법
+
+### 컴포넌트 스캔과 자동 의존관계 설정
+
+Spring Bean을 등록하기 위해서는 `@Component` 가 필요하지만, `@Controller`, `@Service`, `@Repository` 에도 `@Component` 가 포함되어 있기 때문에 Spring Bean으로 등록할 수 있다.
+
+그럼 `@Autowired` 는 무엇을 할까?  
+컨트롤러와 서비스, VO 등을 연결하는 역할을 한다.
+
+
+
+### 제약조건
+
+![](https://user-images.githubusercontent.com/33862991/100715874-35f52c00-33fb-11eb-878b-8e59cef18a6c.JPG)
+
+Spring Container가 Spring Bean을 등록하기 위해서는 패키지 경로가 MainApplication의 패키지 경로와 같아야한다.
+
+위 이미지에서 MainApplication 클래스가 `\com\inflearn\hellospringboot` 에 있는데, 이 하위 경로까지가 Spring Container가 Component Scan을 하므로 이 패키지 경로에서만 Controller, Service, Repository를 생성해야한다.
+
+
+
+### Singleton
+
+스프링이 Spring Container에 Bean이 등록할 때, 기본으로 싱글톤으로 등록한다. 컨테이너에 딱 하나의 객체를 등록하고 이를 공유한다는 의미이다.
+
