@@ -3,15 +3,19 @@ package com.inflearn.hellospringboot.service;
 import com.inflearn.hellospringboot.domain.Member;
 import com.inflearn.hellospringboot.repository.MemoryMemberRepository;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Order;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 
 class MemberServiceTest {
 
-    private static MemberService memberService = new MemberService();
-    private static MemoryMemberRepository repository = new MemoryMemberRepository();
+    MemberService memberService;
+    MemoryMemberRepository repository;
+
+    @BeforeEach
+    public void beforeEach(){
+        repository = new MemoryMemberRepository();
+        memberService = new MemberService(repository);
+    }
+
 
     @AfterEach
     void clearStore(){
