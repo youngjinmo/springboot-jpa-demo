@@ -1,6 +1,7 @@
 package com.inflearn.hellospringboot.service;
 
 import com.inflearn.hellospringboot.domain.Member;
+import com.inflearn.hellospringboot.repository.MemberRepository;
 import com.inflearn.hellospringboot.repository.MemoryMemberRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -11,11 +12,11 @@ import java.util.Optional;
 @Service
 public class MemberService {
 
-    private final MemoryMemberRepository memoryMemberRepository;
+    private final MemberRepository memberRepository;
 
     @Autowired
     public MemberService(MemoryMemberRepository repository) {
-        this.memoryMemberRepository = repository;
+        this.memberRepository = repository;
     }
 
     /**
@@ -28,12 +29,12 @@ public class MemberService {
         // 이름 중복 블락
         validateDuplicateMember(member);
 
-        memoryMemberRepository.save(member);
+        memberRepository.save(member);
         return member.getId();
     }
 
     protected void validateDuplicateMember(Member member) {
-        memoryMemberRepository.findByName(member.getName())
+        memberRepository.findByName(member.getName())
             .ifPresent(members -> {
                 throw new IllegalStateException("Already user name exists.");
             });
@@ -48,7 +49,7 @@ public class MemberService {
      * @return
      */
     public List<Member> findMembers() {
-        return memoryMemberRepository.findAll();
+        return memberRepository.findAll();
     }
 
     /**
@@ -57,7 +58,7 @@ public class MemberService {
      * @return
      */
     public Optional<Member> findOne(Long memberId){
-        return memoryMemberRepository.findById(memberId);
+        return memberRepository.findById(memberId);
     }
 
 }
