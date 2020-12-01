@@ -4,6 +4,7 @@ import com.inflearn.hellospringboot.domain.Member;
 import com.inflearn.hellospringboot.repository.MemoryMemberRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 class MemberServiceTest {
 
@@ -62,21 +63,38 @@ class MemberServiceTest {
     @DisplayName("전체 회원 조회 테스트")
     void findMembers() {
         // given
+        Member member1 = new Member();
+        member1.setName("spring1");
+
+        Member member2 = new Member();
+        member2.setName("spring2");
 
         // when
+        memberService.join(member1);
+        memberService.join(member2);
 
         // then
+        assertEquals(memberService.findMembers().size(),2);
 
     }
 
     @Test
     @Order(4)
+    @DisplayName("개별 회원 조회 테스트")
     void findOne() {
         // given
+        Member member = new Member();
+        member.setName("spring-boot");
+
+        Member member2 = new Member();
+        member2.setName("spring-framework");
 
         // when
+        memberService.join(member);
+        Long userId = member.getId();
 
         // then
+        assertEquals(memberService.findOne(userId).get(),member);
 
     }
 }
