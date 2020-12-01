@@ -282,4 +282,3 @@ Spring Container가 Spring Bean을 등록하기 위해서는 패키지 경로가
 ### Singleton
 
 스프링이 Spring Container에 Bean이 등록할 때, 기본으로 싱글톤으로 등록한다. 컨테이너에 딱 하나의 객체를 등록하고 이를 공유한다는 의미이다.
-
