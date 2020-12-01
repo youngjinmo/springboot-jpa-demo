@@ -216,6 +216,9 @@ java -jar build/libs/{project-nam}.jar
 
 ![](https://user-images.githubusercontent.com/33862991/100574086-93ff1200-331c-11eb-979c-776a7bf45f8f.JPG)
 
+- `@Autowired`
+   - 컨트롤러에서 이 어노테이션을 사용하면, 스프링부트 앱이 실행되면서 Spring Container에서 bean으로 등록이 된다.
+
 <br>
 
 ## 웹 애플리케이션 계층 구조
@@ -228,6 +231,27 @@ java -jar build/libs/{project-nam}.jar
 - Domain : 비즈니스 도메인 객체
    - 회원, 주문, 쿠폰 등의 DB에 저장해서 관리되는 주체
 
-<br>
+
 
 ![](https://user-images.githubusercontent.com/33862991/100575078-b1cd7680-331e-11eb-9176-d8080f2ee7c0.JPG)
+
+<br>
+
+## Spring DI (Dependency Injection)
+
+~~~java
+@Controller
+public class MemberController {
+
+   private final MemberService memberService;
+
+   @Autowired
+   public MemberController(MemberService memberService) {
+      this.memberService = memberService;
+   }
+}
+~~~
+
+Spring DI를 설명할 수 있는 컨트롤러 코드이다. `@Autowired` 를 생성자에 적용하면, 컨트롤러가 실행되면서 `@Autowired`가 적용된 메서드에서 `MemberService` 의 bean을 가져와서 Spring Container에 등록한다. 
+
+그래서 컨트롤러와 서비스를 연결할 때 사용하는 어노테이션이 `@Autowired` 라고 한다. 
