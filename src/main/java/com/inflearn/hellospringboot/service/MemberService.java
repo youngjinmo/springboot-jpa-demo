@@ -24,7 +24,7 @@ public class MemberService {
         return member.getId();
     }
 
-    private void validateDuplicateMember(Member member) {
+    protected void validateDuplicateMember(Member member) {
         memoryMemberRepository.findByName(member.getName())
             .ifPresent(members -> {
                 throw new IllegalStateException("Already user name exists.");
