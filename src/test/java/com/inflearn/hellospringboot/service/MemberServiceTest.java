@@ -2,9 +2,9 @@ package com.inflearn.hellospringboot.service;
 
 import com.inflearn.hellospringboot.domain.Member;
 import com.inflearn.hellospringboot.repository.MemoryMemberRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberServiceTest {
 
@@ -36,7 +36,7 @@ class MemberServiceTest {
 
         // then
         Member findMember = memberService.findOne(saveId).get();
-        Assertions.assertThat(member.getName()).isEqualTo(findMember.getName());
+        assertThat(member.getName()).isEqualTo(findMember.getName());
     }
 
     @Test

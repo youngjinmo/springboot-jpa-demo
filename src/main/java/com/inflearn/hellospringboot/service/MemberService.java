@@ -2,13 +2,15 @@ package com.inflearn.hellospringboot.service;
 
 import com.inflearn.hellospringboot.domain.Member;
 import com.inflearn.hellospringboot.repository.MemoryMemberRepository;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
+@Service
 public class MemberService {
 
-    MemoryMemberRepository memoryMemberRepository;
+    private final MemoryMemberRepository memoryMemberRepository;
 
     public MemberService(MemoryMemberRepository repository) {
         this.memoryMemberRepository = repository;
