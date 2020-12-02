@@ -282,3 +282,49 @@ Spring Container가 Spring Bean을 등록하기 위해서는 패키지 경로가
 ### Singleton
 
 스프링이 Spring Container에 Bean이 등록할 때, 기본으로 싱글톤으로 등록한다. 컨테이너에 딱 하나의 객체를 등록하고 이를 공유한다는 의미이다.
+
+<br>
+
+## Web MVC 작동원리
+
+화면에서 입력받은 값을 컨트롤러를 태우는 과정은 다음과 같다.
+
+~~~html
+<form action="/members/new" method="post">
+   <div class="form-group">
+      <label for="name">이름</label>
+      <input type="text" id="name" name="name" placeholder="이름을 입력하세요.">
+   </div>
+   <a href="/"><button>돌아가기</button></a>
+   <button type="submit">등록</button>
+</form>
+~~~
+
+화면에서 값을 입력받는 태그는 `<input>` 태그이다. `<input>` 태그안에 `name` 이라는 속성을 추가하면, 이 `name` 의 속성값을 통해 스프링이 Spring Container로 입력값을 이동시킨다.  
+
+~~~java
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter @Setter
+public class MemberForm {
+    private String name;
+}
+~~~
+
+이렇게 이동한 값은 VO에서 관리되는데, 일반적으로 VO에서는 필드에 대한 접근제한자를 `private` 로 하기때문에 외부에서 접근이 안된다. 따라서 `setter()`에 의해 스프링 컨테이너에서 사용할 수 있는 객체로 변환된다. 
+
+위의 코드는 lombok을 사용하여 `setter()`를 대신한 코드이다. 아래는 `setter()` 예시 코드이다.
+
+~~~java
+private String name;
+public void setName(String name){
+    this.name = name;
+}
+~~~
+
+여기서 `setter()`가 받는 파라미터명은 화면에서 `<input>` 태그의 `name` 속성값과 같아야한다.
+
+![](https://user-images.githubusercontent.com/33862991/100821057-f24e0100-3492-11eb-85ea-9e4f428cb497.JPG)
+
+디버깅 모드로 확인하면 값이 잘 넘어왔음을 확인할 수 있다.
