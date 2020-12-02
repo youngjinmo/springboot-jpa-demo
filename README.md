@@ -231,7 +231,9 @@ java -jar build/libs/{project-nam}.jar
 - Domain : 비즈니스 도메인 객체
    - 회원, 주문, 쿠폰 등의 DB에 저장해서 관리되는 주체
 
+<br>
 
+## 클래스 의존관계
 
 ![](https://user-images.githubusercontent.com/33862991/100575078-b1cd7680-331e-11eb-9176-d8080f2ee7c0.JPG)
 
@@ -285,7 +287,7 @@ Spring Container가 Spring Bean을 등록하기 위해서는 패키지 경로가
 
 <br>
 
-## Web MVC 작동원리
+## Web MVC 작동원리 (값 입력받기)
 
 화면에서 입력받은 값을 컨트롤러를 태우는 과정은 다음과 같다.
 
@@ -328,3 +330,91 @@ public void setName(String name){
 ![](https://user-images.githubusercontent.com/33862991/100821057-f24e0100-3492-11eb-85ea-9e4f428cb497.JPG)
 
 디버깅 모드로 확인하면 값이 잘 넘어왔음을 확인할 수 있다.
+
+<br>
+
+## Web MVC 작동원리 (값 조회하기)
+
+위에서 회원가입한 회원목록을 조회하는 원리는 다음과 같다.
+
+회원목록을 보여주는 원리는 서버에서 가져온 객체를 화면으로 뿌려주어야한다. 이 때 Thymeleaf, Model 객체가 사용된다.
+
+~~~html
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <a href="/"><button>돌아가기</button></a>
+    <div class="container">
+        <table>
+            <tbody>
+                <tr th:each="member : ${members}">
+                    <td th:text="${member.id}"></td>
+                    <td th:text="${member.name}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
+~~~
+
+`<body>` 안에서 `th` 속성을 이용하면 `<html>` 안의 `xmlns` 태그와 매핑되어 Thymeleaf 문법이 적용된다.
+
+`th:Each="member : ${members}"`는 서버에서 `members`라는 객체를 가져와서 `member`라는 이름으로 화면에서 사용하겠다는 코드이다. 보통 List나 Array같은 자료구조 데이터를 화면에서 사용할때 사용하는 코드이다. 
+
+서버에서 `members` 라는 객체를 어떻게 관리하는지 확인해보자.
+
+~~~java
+@GetMapping("/members")
+public String list(Model model){
+   List<Member> members = memberService.findMembers();
+   model.addAttribute("members",members);
+
+   return "members/memberList";
+}
+~~~
+
+컨트롤러에서 `memberService`를 통해 가져온 회원목록을 `members`라는 이름의 제네릭타입 List로 저장해두었다. 그리고 이를 `Model` 객체의 인스턴스에 저장하여 화면에서 쓸수있게 하였다. 이 Model 객체 덕분에 서버에 있는 데이터를 화면으로 가져가서 사용할 수 있게 된 것이다.
+
+`MemberService`의 `findMembers()`는 다음과 같다.
+
+~~~java
+@Service
+public class MemberService {
+
+    private final MemberRepository memberRepository;
+    
+    @Autowired
+    public MemberService(MemoryMemberRepository repository){
+        this.memberRepository = repository;
+    }
+    
+    /**
+     *  전체 회원 조회
+     * @return
+     */
+    public List<Member> findMembers() {
+       return memberRepository.findAll();
+    }
+}
+~~~
+
+`MemberRepository`의 `findAll()`이다.
+
+~~~java
+@Repository
+public class MemoryMemberRepository implements MemberRepository{
+
+    private static Map<Long, Member> store = new HashMap<>();
+    
+    @Override
+    public List<Member> findAll() {
+       ArrayList list = new ArrayList<>(store.values());
+       return new ArrayList<>(store.values());  // map을 list로 변환해서 반환
+    }
+}
+~~~
+
+회원 id와 이름을 저장하는 객체로 `store` 라는 이름의 Map 데이터를 `static` 키워드로 생성해두고, 각 메서드에서 이 `store` 객체에서 값을 꺼내서 사용하는 방식이다.
+
+`findAll()`에서는 `List` 타입으로 데이터타입을 변환하여 반환하는 기능을 한다.그럼 Service에서 받아서 컨트롤러로 다시 반환하고, 최종적으로 컨트롤러에서 이를 `Model` 객체에 담아서 화면에 보내는 원리이다.

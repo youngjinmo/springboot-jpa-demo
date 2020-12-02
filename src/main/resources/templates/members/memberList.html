@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<body>
+
+    <a href="/"><button>돌아가기</button></a>
+    <div class="container">
+        <table>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>이름</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="member : ${members}">
+                    <td th:text="${member.id}"></td>
+                    <td th:text="${member.name}"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+<style>
+    table th {
+        width: 150px;
+    }
+
+    table td {
+        text-align: center;
+    }
+</style>
+</html>
