@@ -275,6 +275,8 @@ Spring DI를 설명할 수 있는 컨트롤러 코드이다. `@Autowired` 를 �
 
 ### 컴포넌트 스캔과 자동 의존관계 설정
 
+Spring Bean으로 등록해야하는 이유는 스프링은 Spring Container에 등록되어 있는 Bean을 가지고 앱을 실행하는데, 여기에 Bean으로 등록되어 있지 않으면 Spring Container에서 무엇을 실행해야할지 알 수 없기 때문에 반드시 Bean으로 등록해주어야한다.
+
 Spring Bean을 등록하기 위해서는 `@Component` 가 필요하지만, `@Controller`, `@Service`, `@Repository` 에도 `@Component` 가 포함되어 있기 때문에 Spring Bean으로 등록할 수 있다.
 
 그럼 `@Autowired` 는 무엇을 할까?  
