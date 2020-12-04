@@ -514,3 +514,34 @@ SELECT * FROM member;
 ## JdbcTemplate
 
 스프링 JdbcTemplate와 MyBatis같은 라이브러리는 JDBC API에서 본 반복 코드를 대부분 제거해준다. 하지만 SQL은 직접 작성해야한다.
+
+~~~java
+@Repository
+public class JdbcTemplateMemberRepository implements MemberRepository {
+   private final JdbcTemplate jdbcTemplate;
+	
+    ...
+   
+   @Override
+   public Optional<Member> findById(Long id){
+       List<Member> result = 
+           jdbcTemplate.query("select * from member where id = ?",memberRowMapper());
+       return result.stream().findAny();
+    }
+   
+    ...
+   
+    private RowMapper<Member> memberRowMapper(){
+       return (rs, rowNum) -> {
+          Member member = new Member();
+          member.setId(rs.getLong("id"));
+          member.setName(rs.getString("name"));
+          return member;
+       }
+    }
+}
+~~~
+
+JDBC Template는 JDBC 코어 패키지를 갖는 객체로서 JDBC를 더 편하게 사용할 수 있도록 돕는 역할을 한다.
+SQL 쿼리를 실행하여 결과를 반환받는다고 설명되어 있다.
+

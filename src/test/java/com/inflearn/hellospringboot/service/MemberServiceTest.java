@@ -17,11 +17,11 @@ class MemberServiceTest {
         memberService = new MemberService(repository);
     }
 
-
     @AfterEach
     void clearStore(){
         repository.clearStore();
     }
+
 
     @Test
     @Order(1)
