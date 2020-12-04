@@ -221,7 +221,7 @@ java -jar build/libs/{project-nam}.jar
 
 <br>
 
-## 웹 애플리케이션 계층 구조
+## 웹 애플리케이션 계층 구조 (MVC)
 
 ![](https://user-images.githubusercontent.com/33862991/100575074-b09c4980-331e-11eb-92f8-f8d47ec443ec.JPG)
 
@@ -231,11 +231,22 @@ java -jar build/libs/{project-nam}.jar
 - Domain : 비즈니스 도메인 객체
    - 회원, 주문, 쿠폰 등의 DB에 저장해서 관리되는 주체
 
+### MVC 아키텍쳐를 사용하는 이유
+
+URI로 요청이 들어왔을때 컨트롤러에서 직접 비즈니스 로직을 처리하는대신 서비스를 통해서 비즈니스 로직을 구현한다.
+
+서비스는 도메인 리포지토리를 통해 DB를 제어하는데, 이런 관계를 **의존관계** 라고 한다.
+이렇게 역할에 따라 분리함으로써 각각의 책임을 분명하게 분리할 수 있고 결합도를 느슨하게 낮출수 있다. 
+
+웹 MVC에서 결합도는 느슨하게 하여 의존 관계를 만드는 이유는 향후 서비스 확장 등의 유지보수시에 여러 파일을 한꺼번에 수정하지 않아도 수정하고자 하는 기능(역할)의 책임소재가 있는 영역만 수정하면 되므로 훨씬 용이하다는 장점이 있기 때문이다.
+
 <br>
 
 ## 클래스 의존관계
 
 ![](https://user-images.githubusercontent.com/33862991/100575078-b1cd7680-331e-11eb-9176-d8080f2ee7c0.JPG)
+
+Repository는 DB를 관리, 제어하는 클래스인데 이렇게 Interface로 분리하는 이유는 개방폐쇄원칙에서 확장성을 갖추기 위함이다. 이렇게 의존관계를 갖게되면, 실제로 다른 클래스(MemberService)에서 참조하는건 interface이므로 구현체(MemoryMemberRepository)를 변경하더라도 다른 클래스를 변경할 필요가 없어진다.
 
 <br>
 
@@ -467,5 +478,20 @@ INSERT INTO member(name) VALUES('devandy');
 SELECT * FROM member;
 ~~~
 
+<br>
 
+## 통합테스트
 
+### @SpringBootTest
+
+스프링 컨테이너와 테스트를 함께 실행하는 어노테이션.
+
+### @Transactional
+
+테스트 케이스에 애노테이션이 있으면, 테스트 시작 전에 트랜잭션을 시작하고, 테스트 완료 후에 항상 롤백한다. 이렇게 하면 DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않는다.
+
+<br>
+
+## JdbcTemplate
+
+스프링 JdbcTemplate와 MyBatis같은 라이브러리는 JDBC API에서 본 반복 코드를 대부분 제거해준다. 하지만 SQL은 직접 작성해야한다.
