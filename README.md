@@ -511,7 +511,7 @@ SELECT * FROM member;
 
 <br>
 
-## JdbcTemplate
+# JdbcTemplate
 
 스프링 JdbcTemplate와 MyBatis같은 라이브러리는 JDBC API에서 본 반복 코드를 대부분 제거해준다. 하지만 SQL은 직접 작성해야한다.
 
@@ -545,3 +545,95 @@ public class JdbcTemplateMemberRepository implements MemberRepository {
 JDBC Template는 JDBC 코어 패키지를 갖는 객체로서 JDBC를 더 편하게 사용할 수 있도록 돕는 역할을 한다.
 SQL 쿼리를 실행하여 결과를 반환받는다고 설명되어 있다.
 
+<br>
+
+# JPA
+
+- ORM(Object Relational Mapping)을 위한 인터페이스 집합체이다.
+- ORM은 객체가 테이블이 되도록 매핑 시켜주는 것을 의미, ORM을 이용하면 SQL Query가 아닌 직관적인 코드(method)로서 데이터를 제어할 수 있다.
+- 실제 JPA를 구현하는 ORM 프레임워크는 Hibernate, EclipseLink, DataNucleus 등이 있다.
+- 출처 : [victolee - [Spring JPA] ORM과 JPA 그리고 Hibernate](https://victorydntmd.tistory.com/195)
+
+![출처 : victolee님 블로그](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=http%3A%2F%2Fcfile24.uf.tistory.com%2Fimage%2F9948AD435AE3CFAE2B0AB5)
+
+
+
+## JPA로 변환하기.
+
+**build.gradle**
+
+~~~gradle
+dependencies {
+   implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+}
+~~~
+
+**application.properties**
+
+~~~properties
+spring.datasource.url=jdbc:h2:tcp:localhost/~/test
+spring.datasource.driverClassName=org.h2.Driver
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=none
+~~~
+
+`spring.jpa.hibernate.ddl-auto` 는 테이블을 자동으로 생성해주는 기능인데, 이 기능을 잠시 꺼두고 개발을 진행한다.
+
+VO에서 데이터 필드를 JPA에서 인식하는 객체로 맵핑하려면 어노테이션을 추가해야한다.
+
+```java
+import lombok.*;
+import javax.persistence.*;
+
+@Entity
+@ToString
+@Getter @Setter
+public calss Member {
+   @Id @GeneratedValue(strategy = GenetionType.IDENTITY)
+   private Long id;
+    
+   @Column(name = "username")
+   private String name;
+}
+```
+
+
+
+## JpaMemberRepository 생성
+
+~~~java
+@Repository
+public class JpaMemberRepository implements MemberRepository {
+    
+    private final EntityManager em;
+    
+    public JpaMemberRepository(EntityManager em){
+       this.em = em;
+    }
+    
+    ...
+}
+~~~
+
+`EntityManager` 가 `DataSource` 를 갖고있어서 이걸로 실제로 객체와 테이블을 매핑하는 역할을 수행한다. 
+
+### Insert 사용
+
+~~~java
+@Repository
+public class JpaMemberRepository implements MemberRepository {
+    private final EntityManger em;
+    
+    public JpaMemberRepository(EntityManger em){
+       this.em = em;
+    }
+    
+    @Override
+    public Member save(Member member){
+       em.persist(member);
+       return member;
+    }
+}
+~~~
+
+`EntityManager`의 `.persis()` 를 사용하면, EntityManager에서 member 객체를 매핑하여 이렇게 매핑한 데이터를 Insert 쿼리로 만들어서 테이블에 삽입한다.
