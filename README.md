@@ -1,4 +1,4 @@
-## Requirement
+# Requirement
 
 <details>
 	<summary>버전 수정 이력</summary>
@@ -39,7 +39,7 @@
 </details>
 <br>
 
-## Initialize Project Setting
+# Initialize Project Setting
 
 Spring Starter(https://start.spring.io)에서 프로젝트 생성.
 
@@ -52,7 +52,7 @@ Dependencies
 
 <br>
 
-## Library
+# Library
 
 인텔리제이에서 프로젝트를 import하면 개발자가 추가한 의존성을 네트워크를 통해 가져오게 되는데, 이 때 개발자가 의도한 라이브러리 뿐만 하니라 의존하는 상위 라이브러리까지 가져오게된다. 
 
@@ -62,7 +62,7 @@ Spring Boot Starter 관련 라이브러리를 의존성으로 추가하면, Spri
 
 <br>
 
-### Log
+## Log
 
 - `spring-boot-starter-logging`
 
@@ -74,7 +74,7 @@ Slf4j와 Logback은 각각 어떤 라이브러리인지?
 
 <br>
 
-### Test
+## Test
 
 - `spring-boot-starter-test`
 
@@ -88,7 +88,7 @@ Slf4j와 Logback은 각각 어떤 라이브러리인지?
 
 <br>
 
-## Docs
+# Docs
 
 Spring Boot : https://spring.io/projects/spring-boot
 
@@ -96,7 +96,7 @@ Thymeleaf : https://www.thymeleaf.org/
 
 <br>
 
-## Thymeleaf
+# Thymeleaf
 
 Thymeleaf는 HTML 페이지에서 작동하는 템플릿 엔진이다. 페이지 상단에 아래와 같은 타임리프 옵션을 추가하면, HTML 페이지에서 타임리프 문법을 사용할 수 있다.
 
@@ -156,15 +156,15 @@ java -jar build/libs/{project-nam}.jar
 
 <br>
 
-## API 작동원리
+# API 작동원리
 
-### Spring에서 static/templates 구분하는 방법
+## Spring에서 static/templates 구분하는 방법
 
 요청이 들어오면, 일단 해당 URI를 처리하는 컨트롤러가 있는지 찾는다. 없으면 `\static` 디렉토리에서 해당 리소스를 찾는다. 만약 컨트롤러가 있다면, `\templates` 디렉토리에서 리소스를 찾는다.
 
 
 
-### Spring Boot 컨트롤러에서 파라미터를 받는 방법
+## Spring Boot 컨트롤러에서 파라미터를 받는 방법
 
 - `@PathVariable`
 
@@ -216,12 +216,9 @@ java -jar build/libs/{project-nam}.jar
 
 ![](https://user-images.githubusercontent.com/33862991/100574086-93ff1200-331c-11eb-979c-776a7bf45f8f.JPG)
 
-- `@Autowired`
-   - 컨트롤러에서 이 어노테이션을 사용하면, 스프링부트 앱이 실행되면서 Spring Container에서 bean으로 등록이 된다.
-
 <br>
 
-## 웹 애플리케이션 계층 구조 (MVC)
+# 웹 애플리케이션 계층 구조 (MVC)
 
 ![](https://user-images.githubusercontent.com/33862991/100575074-b09c4980-331e-11eb-92f8-f8d47ec443ec.JPG)
 
@@ -231,7 +228,7 @@ java -jar build/libs/{project-nam}.jar
 - Domain : 비즈니스 도메인 객체
    - 회원, 주문, 쿠폰 등의 DB에 저장해서 관리되는 주체
 
-### MVC 아키텍쳐를 사용하는 이유
+## MVC 아키텍쳐를 사용하는 이유
 
 URI로 요청이 들어왔을때 컨트롤러에서 직접 비즈니스 로직을 처리하는대신 서비스를 통해서 비즈니스 로직을 구현한다.
 
@@ -246,7 +243,33 @@ URI로 요청이 들어왔을때 컨트롤러에서 직접 비즈니스 로직�
 
 ![](https://user-images.githubusercontent.com/33862991/100575078-b1cd7680-331e-11eb-9176-d8080f2ee7c0.JPG)
 
-Repository는 DB를 관리, 제어하는 클래스인데 이렇게 Interface로 분리하는 이유는 개방폐쇄원칙에서 확장성을 갖추기 위함이다. 이렇게 의존관계를 갖게되면, 실제로 다른 클래스(MemberService)에서 참조하는건 interface이므로 구현체(MemoryMemberRepository)를 변경하더라도 다른 클래스를 변경할 필요가 없어진다.
+Repository는 DB를 관리, 제어하는 클래스인데 이렇게 Interface로 분리하는 이유는 **개방폐쇄원칙에서 확장성을 갖추기 위함** 이다. 이렇게 의존관계를 갖게되면, 실제로 다른 클래스(MemberService)에서 참조하는건 interface이므로 구현체(MemoryMemberRepository)를 변경하더라도 다른 클래스를 변경할 필요가 없어진다.
+
+즉 아직 DBMS를 결정하지 않았을때 일단 위의 의존관계로 개발하고, 나중에 Repository만 교체하면 DB를 변경할 수 있따.
+
+<br>
+
+# Spring Bean을 등록하는 방법
+
+## Component Scan
+
+Spring Bean으로 등록해야하는 이유는 스프링은 스프링 컨테이너에 등록되어 있는 Bean을 가지고 앱을 실행하는데, 여기에 Bean으로 등록되어 있지 않으면 스프링 컨테이너에서 무엇을 실행해야할지 알 수 없기 때문에 반드시 Bean으로 등록해주어야한다.
+
+Spring Bean을 등록하기 위해서는 `@Component` 가 필요하지만, `@Controller`, `@Service`, `@Repository` 에도 `@Component` 가 포함되어 있기 때문에 Spring Bean으로 등록할 수 있다.
+
+<br>
+
+### 제약조건
+
+![](https://user-images.githubusercontent.com/33862991/100715874-35f52c00-33fb-11eb-878b-8e59cef18a6c.JPG)
+
+스프링 컨테이너가 Spring Bean을 등록하기 위해서는 패키지 경로가 MainApplication의 패키지 경로와 같아야한다.
+
+위 이미지에서 MainApplication 클래스가 `\com\inflearn\hellospringboot` 에 있는데, 이 하위 경로까지가 스프링 컨테이너가 Component Scan을 하므로 이 패키지 경로에서만 Controller, Service, Repository를 생성해야한다.
+
+### Singleton
+
+스프링이 스프링 컨테이너에 Bean이 등록할 때, 기본으로 싱글톤으로 등록한다. 컨테이너에 딱 하나의 객체를 등록하고 이를 공유한다는 의미이다. 이렇게하면 메모리 자원을 절약 할 수 있다는 장점이 있다.
 
 <br>
 
@@ -265,42 +288,36 @@ public class MemberController {
 }
 ~~~
 
-Spring DI를 설명할 수 있는 컨트롤러 코드이다. `@Autowired` 를 생성자에 적용하면, 컨트롤러가 실행되면서 `@Autowired`가 적용된 메서드에서 `MemberService` 의 bean을 가져와서 Spring Container에 등록한다. 
+Spring DI를 설명할 수 있는 컨트롤러 코드이다. `@Autowired` 가 적용된 생성자를 생성하면, 컨트롤러가 실행되면서 `@Autowired`가 적용된 생성자를 스프링 컨테이너에 Bean으로 등록하면서 생성자에서 사용하는 `MemberService` 의 bean을 가져와서 `MemberController`의 Bean과 연결해준다.
 
-그래서 컨트롤러와 서비스를 연결할 때 사용하는 어노테이션이 `@Autowired` 라고 한다. 
+그래서 컨트롤러와 서비스를 연결할 때 사용하는 어노테이션을 `@Autowired` 라고 한다. 
 
-<br>
+스프링앱의 의존관계에 따라 각각의 Bean을 서로 연결해주는 역할을 하기때문에 매우 중요한 역할을 한다고 볼 수 있다.
 
-## Spring Bean을 등록하는 방법
+Controller와 마찬가지로 Service에서도 `@Autowired` 생성자를 만드는 이유도 같다.
 
-### 컴포넌트 스캔과 자동 의존관계 설정
+~~~java
+@Service
+public class MemberService {
+   private final MemberRepository memberRepository;
+    
+   @Autowired
+   public MemberService(MemoryMemberRepository repository){
+      this.memberRepository = repository;
+   }
+}
+~~~
 
-Spring Bean으로 등록해야하는 이유는 스프링은 Spring Container에 등록되어 있는 Bean을 가지고 앱을 실행하는데, 여기에 Bean으로 등록되어 있지 않으면 Spring Container에서 무엇을 실행해야할지 알 수 없기 때문에 반드시 Bean으로 등록해주어야한다.
+첨언하면, 생성자의 파라미터로 사용되는 `MemoryMemberRepository`는 `MemberRepository` 인터페이스의 구현체이다. 
 
-Spring Bean을 등록하기 위해서는 `@Component` 가 필요하지만, `@Controller`, `@Service`, `@Repository` 에도 `@Component` 가 포함되어 있기 때문에 Spring Bean으로 등록할 수 있다.
-
-그럼 `@Autowired` 는 무엇을 할까?  
-컨트롤러와 서비스, VO 등을 연결하는 역할을 한다.
-
-
-
-### 제약조건
-
-![](https://user-images.githubusercontent.com/33862991/100715874-35f52c00-33fb-11eb-878b-8e59cef18a6c.JPG)
-
-Spring Container가 Spring Bean을 등록하기 위해서는 패키지 경로가 MainApplication의 패키지 경로와 같아야한다.
-
-위 이미지에서 MainApplication 클래스가 `\com\inflearn\hellospringboot` 에 있는데, 이 하위 경로까지가 Spring Container가 Component Scan을 하므로 이 패키지 경로에서만 Controller, Service, Repository를 생성해야한다.
-
-
-
-### Singleton
-
-스프링이 Spring Container에 Bean이 등록할 때, 기본으로 싱글톤으로 등록한다. 컨테이너에 딱 하나의 객체를 등록하고 이를 공유한다는 의미이다.
+~~~java
+@Repository
+public class MemoryMemberRepository implements MemberRepository{ ... }
+~~~
 
 <br>
 
-## Web MVC 작동원리 (값 입력받기)
+# Web MVC 작동원리 (값 입력받기)
 
 화면에서 입력받은 값을 컨트롤러를 태우는 과정은 다음과 같다.
 
@@ -315,7 +332,7 @@ Spring Container가 Spring Bean을 등록하기 위해서는 패키지 경로가
 </form>
 ~~~
 
-화면에서 값을 입력받는 태그는 `<input>` 태그이다. `<input>` 태그안에 `name` 이라는 속성을 추가하면, 이 `name` 의 속성값을 통해 스프링이 Spring Container로 입력값을 이동시킨다.  
+화면에서 값을 입력받는 태그는 `<input>` 태그이다. `<input>` 태그안에 `name` 이라는 속성을 추가하면, 이 `name` 의 속성값을 통해 스프링이 스프링 컨테이너로 입력값을 이동시킨다.  
 
 ~~~java
 import lombok.Getter;
@@ -346,7 +363,7 @@ public void setName(String name){
 
 <br>
 
-## Web MVC 작동원리 (값 조회하기)
+# Web MVC 작동원리 (값 조회하기)
 
 위에서 회원가입한 회원목록을 조회하는 원리는 다음과 같다.
 
@@ -434,7 +451,7 @@ public class MemoryMemberRepository implements MemberRepository{
 
 <br>
 
-## H2 Database
+# H2 Database
 
 H2 Database [홈페이지](https://h2database.com/html/download.html)에서 H2 Database를 설치한다.
 
@@ -482,7 +499,7 @@ SELECT * FROM member;
 
 <br>
 
-## 통합테스트
+# 통합테스트
 
 ### @SpringBootTest
 
