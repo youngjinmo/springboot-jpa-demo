@@ -245,7 +245,32 @@ URI로 요청이 들어왔을때 컨트롤러에서 직접 비즈니스 로직�
 
 Repository는 DB를 관리, 제어하는 클래스인데 이렇게 Interface로 분리하는 이유는 **개방폐쇄원칙에서 확장성을 갖추기 위함** 이다. 이렇게 의존관계를 갖게되면, 실제로 다른 클래스(MemberService)에서 참조하는건 interface이므로 구현체(MemoryMemberRepository)를 변경하더라도 다른 클래스를 변경할 필요가 없어진다.
 
-즉 아직 DBMS를 결정하지 않았을때 일단 위의 의존관계로 개발하고, 나중에 Repository만 교체하면 DB를 변경할 수 있따.
+즉 아직 DBMS를 결정하지 않았을때 일단 위의 의존관계로 개발하고, 나중에 Repository만 교체하면 DB를 변경할 수 있다.
+
+**SpringConfig.class**
+
+~~~java
+@Configuration
+public class SpringConfig {
+   @PersistenceContext
+   private EntityManager em;
+    
+   @Autowired
+   public SpringConfig(EneityManager em){
+      this.em = em;
+   }
+   
+   @Bean
+   public MemberRepository memberRepository(){
+   // return new MemoryMemberRepository();
+   // return new JdbcMemberRepository(datasource);
+   // return new JdbcTemplateMemberRepository(datasource);
+      return new JpaMemberRepository(em);
+   }
+}
+~~~
+
+SpringConfig를 생성해서 이를 통해 DB를 관리하는 코드이다. `memberRepository()` 를 통해 무엇을 return 하느냐에 따라 DB 연결을 다르게 할 수 있다.
 
 <br>
 
@@ -549,16 +574,21 @@ SQL 쿼리를 실행하여 결과를 반환받는다고 설명되어 있다.
 
 # JPA
 
-- ORM(Object Relational Mapping)을 위한 인터페이스 집합체이다.
-- ORM은 객체가 테이블이 되도록 매핑 시켜주는 것을 의미, ORM을 이용하면 SQL Query가 아닌 직관적인 코드(method)로서 데이터를 제어할 수 있다.
-- 실제 JPA를 구현하는 ORM 프레임워크는 Hibernate, EclipseLink, DataNucleus 등이 있다.
-- 출처 : [victolee - [Spring JPA] ORM과 JPA 그리고 Hibernate](https://victorydntmd.tistory.com/195)
-
 ![출처 : victolee님 블로그](https://img1.daumcdn.net/thumb/R1280x0/?scode=mtistory2&fname=http%3A%2F%2Fcfile24.uf.tistory.com%2Fimage%2F9948AD435AE3CFAE2B0AB5)
 
+- **JPA(Java Persistent API)** 는 ORM을 위한 인터페이스 집합체이다.
+- **ORM(Object Relational Mapping)** 은 객체가 테이블이 되도록 매핑 시켜주는 것을 의미하며, ORM을 이용하면 SQL Query가 아닌 직관적인 코드(method)로서 데이터를 제어할 수 있다.
+- ORM이란, 실제 JPA를 구현하는 ORM 프레임워크는 Hibernate, EclipseLink, DataNucleus 등이 있다.
 
+![출처: Heee's Development Blog](https://gmlwjd9405.github.io/images/inflearn-jpa/jpa-basic-structure.png)
 
-## JPA로 변환하기.
+- 출처
+   - [victolee - [Spring JPA] ORM과 JPA 그리고 Hibernate](https://victorydntmd.tistory.com/195)
+   - [Heejeong Kwon - [JPA] JPA란](https://gmlwjd9405.github.io/2019/08/04/what-is-jpa.html)
+
+<br>
+
+## JPA로 변환하기
 
 **build.gradle**
 
@@ -581,6 +611,8 @@ spring.jpa.hibernate.ddl-auto=none
 
 VO에서 데이터 필드를 JPA에서 인식하는 객체로 맵핑하려면 어노테이션을 추가해야한다.
 
+<a name="jpa-domain"></a>**Member.class**
+
 ```java
 import lombok.*;
 import javax.persistence.*;
@@ -597,12 +629,15 @@ public calss Member {
 }
 ```
 
+어노테이션으로 `@Id` 를 부여하면 테이블에서 PK로 인식하도록 한다. 
+`@GeneratedValue`는 사용자가 값을 넣을때 따로 부여하지 않아도 디폴트로 id값을 생성하도록 하는 어노테이션이다. 
 
+<br>
 
 ## JpaMemberRepository 생성
 
 ~~~java
-@Repository
+@Transactional
 public class JpaMemberRepository implements MemberRepository {
     
     private final EntityManager em;
@@ -615,12 +650,12 @@ public class JpaMemberRepository implements MemberRepository {
 }
 ~~~
 
-`EntityManager` 가 `DataSource` 를 갖고있어서 이걸로 실제로 객체와 테이블을 매핑하는 역할을 수행한다. 
+`EntityManager` 는 `DataSource`를 갖고있어서 실제로 객체와 테이블을 매핑하는 역할을 수행한다. 
 
-### Insert 사용
+### JPA로 INSERT 구현
 
 ~~~java
-@Repository
+@Transactional
 public class JpaMemberRepository implements MemberRepository {
     private final EntityManger em;
     
@@ -628,6 +663,8 @@ public class JpaMemberRepository implements MemberRepository {
        this.em = em;
     }
     
+    ...
+        
     @Override
     public Member save(Member member){
        em.persist(member);
@@ -636,4 +673,81 @@ public class JpaMemberRepository implements MemberRepository {
 }
 ~~~
 
-`EntityManager`의 `.persis()` 를 사용하면, EntityManager에서 member 객체를 매핑하여 이렇게 매핑한 데이터를 Insert 쿼리로 만들어서 테이블에 삽입한다.
+`EntityManager`의 `.persis()`를 사용하면, `EntityManager`에서 `member` 객체를 매핑하여 이렇게 매핑한 데이터를 `INSERT` 쿼리로 만들어서 테이블에 삽입한다.
+
+### JPA로 SELECT 구현
+
+~~~java
+@Override
+public Optional<Member> findById(Long id){
+    Member member = em.find(Member.class, id);
+    return Optional.ofNullable(member);
+}  
+~~~
+
+JPA를 이용하면 이처럼 직접 SQL을 입력하지 않아도 메서드만으로 쿼리를 생성할 수 있다.
+
+`findById()` 에서 사용한 `EntityManager`의 `find()` 를 열어보면 다음과 같다.
+
+![](https://user-images.githubusercontent.com/33862991/101302732-c3af9c00-387f-11eb-89d4-aebf21c1a6f2.JPG)
+
+파라미터로 EntityClass와 Primary Key를 받는다고 한다.
+
+[도메인](#jpa-domain)에서 `id`를 Member 테이블에 대한 PK로 지정했으므로 파라미터에 `Member` 클래스와 PK에 해당하는 id를 넣어주면, `.find(Member.class, id)` 라고만 해도 `id`를 통해서 Member 테이블 조회를 하는 쿼리를 생성하는 것이다.
+
+### JPQL로 SELECT 구현 
+
+~~~java
+@Override
+public List<Member> findAll(){
+    return em.createQuery("SELECT m FROM member m", Member.class)
+        .getResultList();
+}
+~~~
+
+JPA는 JPA에서 제공하는 메서드만으로 섬세한 쿼리 작성이 힘들다는 단점이 있다. 이를 극복하기 위해 탄생한게 **JPQL(Java Persistence Query Language)** 이다.
+
+- 읽어보면 좋을 글
+   - [victolee - [Spring JPA] JPQL](https://victorydntmd.tistory.com/205)
+
+위의 JPQL 쿼리에서 인상깊은 점은 SQL을 사용하더라도 **쿼리를 조회하는 대상이 테이블이 아니라 객체(Entity)** 라는 사실이다.
+
+JPQL에서 객체(Entity)를 대상으로 조회할 수 있는건 **JPA에서 객체를 미리 매핑** 해두었기 때문에 가능한 일이다. 그래서
+
+```sql
+SELECT id, name FROM member
+```
+
+라고 작성하지 않고,
+
+~~~sql
+SELECT m FROM member m
+~~~
+
+처럼 객체를 대상으로 객체를 조회하더라도 해당 객체를 매핑해둔 필드를 SQL처럼 조회가 가능한 것이다. 즉 JPA이기 때문에 가능한 쿼리인 셈이다.
+
+### JPQL로 파라미터 받아서 조회(SELECT)하기
+
+이름(`name`)을 파라미터로 받아서 해당 이름의 Member 객체를 조회하는 쿼리를 생성하는 코드이다.
+
+~~~java
+@Override
+public Optional<Member> findByName(String name) {
+    List<Member> result = em.createQuery("SELECT m FROM member m WHERE m.name = :name", Member.class)
+        .setParameter("name", name)
+        .getResultList();
+}
+~~~
+
+JPQL 쿼리에서 `:name` 이라는 쿼리가 실제 파라미터를 받는 영역이다.
+
+~~~java
+.setParameter("name", name);
+~~~
+
+ 이 쿼리를 통해서 JPQL에 들어가는 파라미터 변수명을 매핑한다. 그럼 `findByName()` 메서드가 받는 파라미터를 JPQL 쿼리로 매핑해서 조회를 하게 된다.
+
+그리고 `.getResultList()` 를 통해 JPQL 쿼리 결과를 `List` 타입으로 반환받게 된다.
+
+
+
