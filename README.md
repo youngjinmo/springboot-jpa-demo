@@ -749,5 +749,14 @@ JPQL 쿼리에서 `:name` 이라는 쿼리가 실제 파라미터를 받는 영�
 
 그리고 `.getResultList()` 를 통해 JPQL 쿼리 결과를 `List` 타입으로 반환받게 된다.
 
+<br>
 
+# Spring Data JPA
 
+스프링 데이터 JPA를 이용하면, 리포지토리에 구현 클래스 없이도 인터페이스만으로 개발을 완료할 수 있다.
+
+기본적인 CRUD 기능을 스프링 데이터 JPA가 제공하기 때문에 개발자의 생산성이 증가한다.
+
+스프링 데이터 JPA는 JPA를 편리하게 사용할 수 있는 기술이므로 JPA를 먼저 학습한 후 스프링 데이터 JPA를 학습해야 한다.
+
+![](https://user-images.githubusercontent.com/33862991/101315030-295e5100-389d-11eb-8baf-95b15b2fc915.JPG)
