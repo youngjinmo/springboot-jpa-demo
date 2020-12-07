@@ -15,7 +15,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
 
     @Autowired
-    public MemberService(MemoryMemberRepository repository) {
+    public MemberService(MemberRepository repository) {
         this.memberRepository = repository;
     }
 

@@ -1,17 +1,23 @@
 package com.inflearn.hellospringboot.repository;
 
 import com.inflearn.hellospringboot.domain.Member;
+import com.inflearn.hellospringboot.service.MemberService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 class MemoryMemberRepositoryTest {
 
     MemoryMemberRepository repository = new MemoryMemberRepository();
+
+    @Autowired
+    MemberService memberService;
 
     @AfterEach
     public void afterEach(){
@@ -21,7 +27,7 @@ class MemoryMemberRepositoryTest {
 
     @Test
     @Order(1)
-    public void save(){
+    public void findById(){
         // given
         Member member = new Member();
         member.setName("devandy");

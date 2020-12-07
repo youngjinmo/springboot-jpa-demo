@@ -3,13 +3,15 @@ package com.inflearn.hellospringboot.service;
 import com.inflearn.hellospringboot.domain.Member;
 import com.inflearn.hellospringboot.repository.MemoryMemberRepository;
 import org.junit.jupiter.api.*;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class MemberServiceTest {
 
-    MemberService memberService;
-    MemoryMemberRepository repository;
+    @Autowired MemberService memberService;
+    @Autowired MemoryMemberRepository repository;
 
     @BeforeEach
     public void beforeEach(){
